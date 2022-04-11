@@ -21,14 +21,23 @@ class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext
                 .withEnv("POSTGRES_PASSWORD", "changeme")
                 .withExposedPorts(5432)
 
+        val rabbitMQContainer =
+            GenericContainer(DockerImageName.parse("rabbitmq:management"))
+                .withExposedPorts(5672, 15672)
+
         postgreSQLContainer.start()
+        rabbitMQContainer.start()
         while (postgreSQLContainer.isRunning.not())
+            delay(1000)
+        while (rabbitMQContainer.isRunning.not())
             delay(1000)
 
         val postgresUrl = ("${postgreSQLContainer.host}:${postgreSQLContainer.getMappedPort(5432)}")
 
         TestPropertyValues
             .of(
+                "spring.rabbitmq.host=" + rabbitMQContainer.host,
+                "spring.rabbitmq.port=" + rabbitMQContainer.getMappedPort(5672),
                 "spring.r2dbc.url=r2dbc:postgresql://$postgresUrl/postgres",
                 "spring.r2dbc.username=postgres",
                 "spring.r2dbc.password=changeme"
@@ -39,7 +48,10 @@ class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext
             ApplicationListener<ContextClosedEvent> {
                 runBlocking {
                     postgreSQLContainer.stop()
+                    rabbitMQContainer.stop()
                     while (postgreSQLContainer.isRunning)
+                        delay(1000)
+                    while (rabbitMQContainer.isRunning)
                         delay(1000)
                 }
             }

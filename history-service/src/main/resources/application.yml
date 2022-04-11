@@ -13,9 +13,17 @@ spring:
       max-size: '10'
       initial-size: '5'
       enabled: 'true'
+  jpa:
+    hibernate:
+      ddl-auto: create-update
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
   cloud:
     function:
-      definition: flagPersonQueueListener;savePersonQueueListener;updatePersonQueueListener
+      definition: flagPersonQueueListener;savePersonQueueListener;updatePersonQueueListener;deletePersonQueueListener;flagTransactionQueueListener;
     stream:
       bindings:
         flagPersonQueueListener-in-0:
@@ -27,6 +35,12 @@ spring:
         updatePersonQueueListener-in-0:
           destination: updatepersonexchange
           group: updatepersonqueue
+        deletePersonQueueListener-in-0:
+          destination: deletepersonexchange
+          group: deletepersonqueue
+        flagTransactionQueueListener-in-0:
+          destination: flagtransactionexchange
+          group: flagtransactionqueue
       rabbit:
         bindings:
           flagPersonQueueListener-in-0:
@@ -48,6 +62,20 @@ spring:
               queueNameGroupOnly: true
               binding-routing-key-delimiter: ","
               bindingRoutingKey: "updatepersonroutingkey"
+              exchangeType: direct
+              autoBindDlq: false
+          deletePersonQueueListener-in-0:
+            consumer:
+              queueNameGroupOnly: true
+              binding-routing-key-delimiter: ","
+              bindingRoutingKey: "deletepersonroutingkey"
+              exchangeType: direct
+              autoBindDlq: false
+          flagTransactionQueueListener-in-0:
+            consumer:
+              queueNameGroupOnly: true
+              binding-routing-key-delimiter: ","
+              bindingRoutingKey: "flagtransactionroutingkey"
               exchangeType: direct
               autoBindDlq: false
 logging:

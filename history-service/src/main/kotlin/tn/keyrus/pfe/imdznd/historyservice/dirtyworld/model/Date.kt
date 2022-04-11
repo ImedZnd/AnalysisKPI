@@ -18,7 +18,7 @@ class Date(
 ) {
     companion object Builder{
         fun stringToLocalDate(date: String): Either<DateError, LocalDate> {
-            val dateAsString = date.split('/')
+            val dateAsString = date.split('-')
             return try {
                 Either.right(
                     LocalDate.of(
