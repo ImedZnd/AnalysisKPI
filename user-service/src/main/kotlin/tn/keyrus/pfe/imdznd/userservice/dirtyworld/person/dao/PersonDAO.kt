@@ -23,4 +23,5 @@ class PersonDAO(
     val isFraudster: Boolean,
     ) {
 
+
 }
