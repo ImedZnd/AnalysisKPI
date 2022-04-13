@@ -22,4 +22,5 @@ class PersonDAO(
     val numberOfFlags: Int,
     val isFraudster: Boolean,
     ) {
+
 }
