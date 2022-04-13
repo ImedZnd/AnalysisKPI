@@ -22,14 +22,12 @@ data class EventDAO(
         )
 
     companion object {
-
         fun Event.toDAO() =
             EventDAO(
                 action = action,
                 objectId = objectId,
                 eventTime = eventTime
             )
-
     }
 
 }

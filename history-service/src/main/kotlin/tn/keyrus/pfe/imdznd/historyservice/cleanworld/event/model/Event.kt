@@ -9,30 +9,6 @@ class Event private constructor(
     val objectId: String,
     val eventTime: LocalDateTime
 ) {
-    override fun toString() =
-        """Event(
-        |   action='$action',
-        |   objectId='$objectId',         
-        |   creationTime='$eventTime',
-        |)"""
-            .trimMargin()
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as Event
-        if (action != other.action) return false
-        if (objectId != other.objectId) return false
-        if (eventTime != other.eventTime) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = action.hashCode()
-        result = 31 * result + objectId.hashCode()
-        result = 31 * result + eventTime.hashCode()
-        return result
-    }
 
     companion object Builder {
 
